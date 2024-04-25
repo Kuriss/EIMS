@@ -7,10 +7,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -28,17 +32,30 @@ public class SlideController {
     @FXML
     private ImageView test_image;           //图片;
     @FXML
-    private Button addButton;               //添加图片按钮;
+    private ImageView addFileButton;                    //添加文件夹按钮;
     @FXML
-    private Button playButton;                  //播放按钮;
+    private ImageView previousPictureButton;            //上一张按钮;
     @FXML
-    private TextField fileNameTextField;                 //图片名称;
+    private ImageView nextPictureButton;                //下一张按钮;
+    @FXML
+    private ImageView zoomInButton;                     //放大按钮;
+    @FXML
+    private ImageView zoomOutButton;                    //缩小按钮;
+    @FXML
+    private Text fileNameText;                          //图片名字信息;
     @FXML
     private ComboBox styleComboBox;                         //幻灯片风格选择框;
     private List<Image> imageList = new ArrayList<>();          // 图片列表
     private int currentIndex = 0;                        // 当前图片索引
     private Timeline timeline;                            // 时间轴用于播放幻灯片
     private FadeTransition fadeTransition;                  //淡入淡出动画;
+    private double scaleFactor = 1.0;                   //缩放倍数;
+    private double mouseDownX = 0;                      //鼠标操作X坐标
+    private double mouseDownY = 0;                      //鼠标操作Y坐标
+
+    public SlideController(){
+        System.out.println("构造函数");
+    }
 
 
     //初始化函数(页面加载时执行)
@@ -47,6 +64,11 @@ public class SlideController {
         //初始化幻灯片风格选择框选项;
         ObservableList<String> observableList = FXCollections.observableArrayList("常规", "淡入淡出", "滑动切换","翻转切换","缩放切换","闪烁切换","随机切换");
         styleComboBox.setItems(observableList);
+
+       //添加鼠标按键事件监听器(用于拖拽放大的图片)
+        addMouseListeners();
+        //添加鼠标滚轮事件监听器(用于滚轮放大缩小图片)
+        addScrollListeners();
     }
 
 
@@ -89,9 +111,148 @@ public class SlideController {
         return name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".gif");
     }
 
+    //上一张;
+    @FXML
+    private void handlePreviousButtonAction(MouseEvent event) {
+
+        // 重置位置
+        test_image.setTranslateX(0);
+        test_image.setTranslateY(0);
+
+        if (imageList.isEmpty() || imageList.size() <= 1) {
+            return; // 如果图片列表为空或只有一张图片，则不做任何操作
+        }
+        currentIndex = (currentIndex - 1 + imageList.size()) % imageList.size();
+        Image previousImage = imageList.get(currentIndex);
+        //重置缩放比例;
+        test_image.setScaleX(1.0);
+        test_image.setScaleY(1.0);
+        scaleFactor = 1.0;
+
+        updateImageView(previousImage);
+        updateFileNameTextField();
+    }
+
+    // 点击“下一张”按钮事件处理方法
+    @FXML
+    private void handleNextButtonAction(MouseEvent event) {
+        // 重置位置
+        test_image.setTranslateX(0);
+        test_image.setTranslateY(0);
+
+        if (imageList.isEmpty() || imageList.size() <= 1) {
+            return; // 如果图片列表为空或只有一张图片，则不做任何操作
+        }
+        currentIndex = (currentIndex + 1) % imageList.size();
+        Image nextImage = imageList.get(currentIndex);
+        //重置缩放比例;
+        test_image.setScaleX(1.0);
+        test_image.setScaleY(1.0);
+        scaleFactor = 1.0;
+
+        updateImageView(nextImage);
+        updateFileNameTextField();
+    }
+
+    //放大图片;
+    @FXML
+    private void handleZoomInButtonAction(MouseEvent event) {
+        if (test_image.getImage() == null) {
+            // 如果不存在图片，不做任何操作，或者给用户一个提示
+            return;
+        }
+        // 放大图片
+        scaleFactor *= 1.2; // 增加20%的缩放比例
+        test_image.setScaleX(scaleFactor);
+        test_image.setScaleY(scaleFactor);
+    }
+
+    //缩小图片;
+    @FXML
+    private void handleZoomOutButtonAction(MouseEvent event) {
+        if (test_image.getImage() == null) {
+            // 如果不存在图片，不做任何操作，或者给用户一个提示
+            return;
+        }
+        // 缩小图片
+        scaleFactor /= 1.2; // 减少20%的缩放比例
+        test_image.setScaleX(scaleFactor);
+        test_image.setScaleY(scaleFactor);
+        //若图片已经回到初始大小,重置图片位置;
+        if(scaleFactor <= 1.0){
+            test_image.setTranslateX(0);
+            test_image.setTranslateY(0);
+        }
+    }
+
+    // 添加鼠标事件的监听器
+    private void addMouseListeners() {
+        // 添加鼠标按下事件的监听器
+        test_image.setOnMousePressed(event -> {
+            // 只有在图片被放大时才允许拖拽
+            if (scaleFactor > 1.0) {
+                // 记录鼠标按下时的坐标
+                mouseDownX = event.getSceneX();
+                mouseDownY = event.getSceneY();
+            }
+        });
+
+        // 添加鼠标拖拽事件的监听器
+        test_image.setOnMouseDragged(event -> {
+            // 只有在图片被放大时才允许拖拽
+            if (scaleFactor > 1.0) {
+                // 计算鼠标移动的距离
+                double deltaX = event.getSceneX() - mouseDownX;
+                double deltaY = event.getSceneY() - mouseDownY;
+
+                // 移动图片
+                test_image.setTranslateX(test_image.getTranslateX() + deltaX);
+                test_image.setTranslateY(test_image.getTranslateY() + deltaY);
+
+                // 更新鼠标按下时的坐标
+                mouseDownX = event.getSceneX();
+                mouseDownY = event.getSceneY();
+            }
+        });
+    }
+
+    // 添加鼠标滚轮事件的监听器
+    private void addScrollListeners() {
+        // 添加鼠标滚轮事件的监听器
+        test_image.setOnScroll(event -> {
+            // 获取滚轮滚动的量
+            double deltaY = event.getDeltaY();
+
+            // 根据滚轮滚动的方向放大或缩小图片
+            if (deltaY > 0) {
+                scaleFactor *= 1.2; // 向上滚动，放大图片
+            } else {
+                scaleFactor /= 1.2; // 向下滚动，缩小图片
+            }
+
+            // 更新图片的缩放比例
+            test_image.setScaleX(scaleFactor);
+            test_image.setScaleY(scaleFactor);
+
+            //若图片已经回到初始大小,重置图片位置;
+            if(scaleFactor <= 1.0){
+                test_image.setTranslateX(0);
+                test_image.setTranslateY(0);
+            }
+        });
+    }
+
+
     //播放幻灯片
     @FXML
     private void handlePlayButtonAction(ActionEvent event){
+        //播放幻灯片时禁用按钮;
+        addFileButton.setDisable(true);
+        previousPictureButton.setDisable(true);
+        nextPictureButton.setDisable(true);
+        zoomInButton.setDisable(true);
+        zoomOutButton.setDisable(true);
+
         if(imageList.isEmpty())
             return;
 
@@ -393,13 +554,13 @@ public class SlideController {
     //停止播放
     @FXML
     private void handleStopButtonAction(ActionEvent event){
-        if(timeline != null){
-            timeline.stop();
-        }
-    }
+        //停止播放时取消按钮禁用;
+        addFileButton.setDisable(false);
+        previousPictureButton.setDisable(false);
+        nextPictureButton.setDisable(false);
+        zoomInButton.setDisable(false);
+        zoomOutButton.setDisable(false);
 
-    //停止时间轴运行;
-    private void stopPlay(){
         if(timeline != null){
             timeline.stop();
         }
@@ -415,9 +576,22 @@ public class SlideController {
     private void updateFileNameTextField() {
         Image currentImage = imageList.get(currentIndex);
         String fileName = new File(currentImage.getUrl()).getName();
+        //去除文件扩展名
+        String fileNameWithoutExtension = removeExtension(fileName);
 
-        // 更新文本框的内容
-        fileNameTextField.setText(fileName);
+        fileNameText.setText(fileNameWithoutExtension);
     }
 
+    //去除文件扩展名字
+    private String removeExtension(String fileName) {
+        // 找到最后一个点号的位置
+        int lastDotIndex = fileName.lastIndexOf(".");
+        if (lastDotIndex == -1) {
+            // 如果找不到点号，返回原始文件名
+            return fileName;
+        } else {
+            // 截取文件名（不带扩展名）
+            return fileName.substring(0, lastDotIndex);
+        }
+    }
 }
