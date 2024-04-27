@@ -6,16 +6,13 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.util.Callback;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.scene.layout.VBox;
 
 
 public class DirectoryTreeController {
@@ -28,6 +25,10 @@ public class DirectoryTreeController {
 
 
 
+    @FXML
+    private Pane bottomPane;//底部显示选中图片数的栏
+
+
     //目录树的根节点
     private TreeItem<File> mainTreeItem;
 
@@ -38,6 +39,20 @@ public class DirectoryTreeController {
     //显示图片的部分
     @FXML
     private FlowPane imageFlowPane;
+
+    private int numOfImage;//图片数量
+
+    private double sizeOfImage;
+
+
+
+    public static Label numAndSizeLabel = new Label();//文件夹里图片大小和数量标签
+
+
+    public static Label currentDirectoryLable = new Label();//文件夹标签
+
+    @FXML
+    private Pane topMessagePane;
 
     //imageflowpane的滚动条
     @FXML
@@ -72,6 +87,7 @@ public class DirectoryTreeController {
         imageScrollPane.setFitToWidth(true);//让imageFlowPane充斥整个imageScrollPane
         imageScrollPane.setFitToHeight(true);
         imageScrollPane.setStyle("-fx-focus-color: transparent;");//设置选中时的边框，不要太显眼
+        //imageScrollPane.setVgrow(imageScrollPane, javafx.scene.layout.Priority.ALWAYS);
 
         imageFlowPane.setPadding(new Insets(10, 20, 20, 20));//设置边界
        // imageFlowPane.setOrientation(Orientation.HORIZONTAL);
@@ -79,6 +95,7 @@ public class DirectoryTreeController {
         imageFlowPane.setVgap(30);//每个图片的垂直间距
         imageFlowPane.setStyle("-fx-background-color: rgb(255,255,255)");
         //imageFlowPane.setPrefSize(579.8, 600);
+
 
 
 
@@ -98,6 +115,7 @@ public class DirectoryTreeController {
 
     @FXML       //点击目录树
     void handle(MouseEvent event) {
+
 
         TreeItem<File> selectedItem = directoryTree.getSelectionModel().getSelectedItem();//获取点击到的item
         try {
@@ -190,7 +208,9 @@ public class DirectoryTreeController {
 
 
     public void getPicture(TreeItem<File> file){
-
+        topMessagePane.getChildren().clear();
+        numOfImage = 0;//让文件夹中的图片数量重置为0
+        sizeOfImage = 0;//让文件夹大小清零
         // 清空之前显示的图片
         imageFlowPane.getChildren().clear();
 
@@ -198,14 +218,21 @@ public class DirectoryTreeController {
 
         if(fileList.length>0) {
             //遍历
-            for (File value : fileList) {
+            for (File value : fileList)
+            {
                 //如果不是文件夹
-                if (!value.isDirectory()) {
+                if (!value.isDirectory())
+                {
                     String fileName = value.getName();
                     String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);//获取后缀
                     // 程序能够显示的图片格式包括:.JPG、.JPEG、.GIF、.PNG、和.BMP。
                     if (suffix.equals("jpg")||suffix.equals("JPG")||suffix.equals("png")||suffix.equals("BMP")
-                            ||suffix.equals("GIF")||suffix.equals("JPEG")||suffix.equals("gif")) {
+                            ||suffix.equals("GIF")||suffix.equals("JPEG")||suffix.equals("gif"))
+                    {
+                        numOfImage++;//图片数+1
+                        File fileOfImage = new File(value.getAbsolutePath());
+                        sizeOfImage +=fileOfImage.length()/1024.0/1024.0;//把图片的大小加上
+
                         // 创建 ImageInDirectory 对象并添加到 imageFlowPane 中显示
                         ImageInDirectory imageBoxLabel = new ImageInDirectory("File:"+value.getAbsolutePath(),fileName);
                         imageFlowPane.getChildren().add(imageBoxLabel.getImageLabel());
@@ -213,6 +240,13 @@ public class DirectoryTreeController {
                 }
             }
         }
+
+
+        sizeOfImage = Math.round(sizeOfImage * 100.0) / 100.0; // 将小数保留两位
+        numAndSizeLabel.setText("图片数量："+numOfImage+"      图片总大小："+sizeOfImage+"MB");
+        currentDirectoryLable.setText("文件夹："+file.getValue().getName());
+        topMessagePane.getChildren().addAll(currentDirectoryLable,numAndSizeLabel);
+       // System.out.println(sizeOfImage);
 
     }
 
