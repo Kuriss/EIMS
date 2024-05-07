@@ -4,10 +4,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.File;
@@ -273,6 +276,25 @@ public class DirectoryTreeController {
     @FXML
     void onPDFClick(MouseEvent mouseEvent)
     {
+        try {
+            // 加载另一个FXML文件
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("PDF.fxml"));
+            Parent root = loader.load();
+            SlideController pdfCtrl=loader.getController();
+            pdfCtrl.initialize(directoryTree.getSelectionModel().getSelectedItem().getValue());
+            // 创建新的场景
+            Scene scene = new Scene(root);
 
+            // 创建新的舞台（窗口）
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setTitle("新窗口标题");
+
+            // 显示新窗口
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 }

@@ -58,31 +58,31 @@ public class SlideController {
         System.out.println("构造函数");
     }
 
+    public File selectedDirectory;
 
     //初始化函数(页面加载时执行)
     @FXML
-    private void initialize() {
+    void initialize(File selectedDirectory) {
         //初始化幻灯片风格选择框选项;
         ObservableList<String> observableList = FXCollections.observableArrayList("常规", "淡入淡出", "滑动切换","翻转切换","缩放切换","闪烁切换","随机切换");
         styleComboBox.setItems(observableList);
-
+        this.selectedDirectory = selectedDirectory;
        //添加鼠标按键事件监听器(用于拖拽放大的图片)
         addMouseListeners();
         //添加鼠标滚轮事件监听器(用于滚轮放大缩小图片)
         addScrollListeners();
+        handleSelectFolderButtonAction();
     }
-
 
     //选择文件夹
     @FXML
     private void handleSelectFolderButtonAction() {
         // 创建文件夹选择器
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("选择文件夹");
-
-        // 显示文件夹选择器并等待用户选择文件夹
-        File selectedDirectory = directoryChooser.showDialog(new Stage());
-
+//        DirectoryChooser directoryChooser = new DirectoryChooser();
+//        directoryChooser.setTitle("选择文件夹");
+//
+//        // 显示文件夹选择器并等待用户选择文件夹
+//        File selectedDirectory = directoryChooser.showDialog(new Stage());
         // 如果用户选择了文件夹，则读取文件夹中的所有图片文件
         if (selectedDirectory != null) {
             // 清空图片列表
