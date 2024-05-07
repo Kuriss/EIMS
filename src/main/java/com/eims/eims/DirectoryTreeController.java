@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.util.Callback;
@@ -12,22 +13,21 @@ import javafx.util.Callback;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 
 public class DirectoryTreeController {
-
 
     @FXML
     private BorderPane boderPane;
     @FXML
     private Label welcomeText;
 
-
-
     @FXML
     private Pane bottomPane;//底部显示选中图片数的栏
-
 
     //目录树的根节点
     private TreeItem<File> mainTreeItem;
@@ -44,6 +44,10 @@ public class DirectoryTreeController {
 
     private double sizeOfImage;
 
+    //添加布局中图片显示与上层类对象的对应关系
+    private Map<VBox, ImageInDirectory> vBoxImageMap;
+    //复制文件的数据结构
+    private static List<File> copyList;
 
 
     public static Label numAndSizeLabel = new Label();//文件夹里图片大小和数量标签
@@ -115,8 +119,6 @@ public class DirectoryTreeController {
 
     @FXML       //点击目录树
     void handle(MouseEvent event) {
-
-
         TreeItem<File> selectedItem = directoryTree.getSelectionModel().getSelectedItem();//获取点击到的item
         try {
             addItems(selectedItem, 0);//添加子文件
@@ -124,8 +126,6 @@ public class DirectoryTreeController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
         //setcellfactory是javafx中设置自定义单元格的方法，也就是一个项
         directoryTree.setCellFactory(new Callback<>() {
             //callback参数定义了如何创建树状图节点的单元格
@@ -153,9 +153,6 @@ public class DirectoryTreeController {
                 };
             }
         });
-
-
-
     }
 
 
@@ -205,15 +202,13 @@ public class DirectoryTreeController {
         return item.getName();
     }
 
-
-
     public void getPicture(TreeItem<File> file){
         topMessagePane.getChildren().clear();
         numOfImage = 0;//让文件夹中的图片数量重置为0
         sizeOfImage = 0;//让文件夹大小清零
         // 清空之前显示的图片
         imageFlowPane.getChildren().clear();
-
+        vBoxImageMap = new HashMap<>();
         File[] fileList = file.getValue().listFiles(); // 获取文件夹中的文件列表
 
         if(fileList.length>0) {
@@ -235,19 +230,49 @@ public class DirectoryTreeController {
 
                         // 创建 ImageInDirectory 对象并添加到 imageFlowPane 中显示
                         ImageInDirectory imageBoxLabel = new ImageInDirectory("File:"+value.getAbsolutePath(),fileName);
+                        vBoxImageMap.put((VBox) imageBoxLabel.getImageLabel(),imageBoxLabel);
+                        System.out.println(vBoxImageMap.size());
                         imageFlowPane.getChildren().add(imageBoxLabel.getImageLabel());
                     }
                 }
             }
         }
-
-
         sizeOfImage = Math.round(sizeOfImage * 100.0) / 100.0; // 将小数保留两位
-        numAndSizeLabel.setText("图片数量："+numOfImage+"      图片总大小："+sizeOfImage+"MB");
-        currentDirectoryLable.setText("文件夹："+file.getValue().getName());
-        topMessagePane.getChildren().addAll(currentDirectoryLable,numAndSizeLabel);
-       // System.out.println(sizeOfImage);
+        label(file.getValue().getName());
+        imageHandle(numAndSizeLabel);
 
     }
+    //图片编辑操作
 
+    public void imageHandle(Label textLabel){
+        ImageHandler imageHandler = new ImageHandler(imageFlowPane,copyList);
+        imageHandler.setNumOfImages(numOfImage);
+        imageHandler.setSizeOfImage(sizeOfImage);
+        if(vBoxImageMap==null) System.out.println("1.map is null");
+        imageHandler.setTextLabel(textLabel,vBoxImageMap);//
+        imageHandler.selectImage();//处理选中与功能
+        if(copyList==null)
+        {
+            copyList = imageHandler.getCopyList();
+        }
+        imageHandler.showImage();
+        imageHandler.blank();
+        topMessagePane.getChildren().add(numAndSizeLabel);
+    }
+    //图片计数操作
+    public void label(String name)
+    {
+        currentDirectoryLable.setText("文件夹："+name);
+        topMessagePane.getChildren().add(currentDirectoryLable);
+        numAndSizeLabel.setText("图片数量："+numOfImage+"      图片总大小："+sizeOfImage+"MB"+"     已选取图片：");
+    }
+
+    //刷新按钮
+
+    //幻灯片按钮
+    @FXML
+    void onPDFClick(MouseEvent mouseEvent)
+    {
+
+    }
 }

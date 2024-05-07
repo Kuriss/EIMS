@@ -17,8 +17,6 @@ public class EIMSApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-
-
         FXMLLoader fxmlLoader = new FXMLLoader(EIMSApplication.class.getResource("MainWindow.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1200, 640);
         stage.setMinHeight(500);
@@ -27,6 +25,7 @@ public class EIMSApplication extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
 
 
 
