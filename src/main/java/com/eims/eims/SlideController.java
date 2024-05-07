@@ -1,3 +1,4 @@
+//播放时滚轮放大缩小仍然可用 且播放时放大拖拽可用
 package com.eims.eims;
 
 import javafx.animation.*;

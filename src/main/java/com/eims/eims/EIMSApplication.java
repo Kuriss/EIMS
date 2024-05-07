@@ -11,7 +11,7 @@ import java.io.IOException;
 public class EIMSApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(EIMSApplication.class.getResource("MainWindow.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(EIMSApplication.class.getResource("PDF.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("电子图片管理系统");
         stage.setScene(scene);
