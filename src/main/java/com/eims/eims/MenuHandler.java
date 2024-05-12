@@ -56,13 +56,9 @@ public class MenuHandler {
         menuItem3.setOnAction(event -> {
             deleteImage(imageInDirectory);
         });
-        // 将菜单项添加到菜单中
         contextMenu.getItems().addAll(menuItem1, menuItem2, menuItem3);
-
-        // 在 vbox上设置右键菜单
         vbox.setOnContextMenuRequested(event -> {
             if (contextMenu.isShowing()) {
-                //contextMenu.hide();
                 contextMenu.show(vbox, event.getScreenX(), event.getScreenY());
             }
         });
@@ -77,13 +73,10 @@ public class MenuHandler {
     }
 
     public void setMultiContextMenu(ObservableList<Node> selectedVBoxes, List<ImageInDirectory> imageInDirectory) {
-        //为图片添加事件
         ContextMenu contextMenu = new ContextMenu();
         MenuItem menuItem1 = new MenuItem("批量重命名");
         MenuItem menuItem2 = new MenuItem("批量复制");
         MenuItem menuItem3 = new MenuItem("批量删除");
-
-        // 添加菜单项的点击事件处理器
         menuItem1.setOnAction(event -> {
             multiRename(imageInDirectory);
         });
@@ -93,17 +86,13 @@ public class MenuHandler {
         menuItem3.setOnAction(event -> {
             deleteImage(imageInDirectory);
         });
-        // 将菜单项添加到菜单中
         contextMenu.getItems().addAll(menuItem1, menuItem2,menuItem3);
-
-        // 在 FlowPane 上设置右键菜单
         for (Node vBox : selectedVBoxes) {
             vBox.setOnContextMenuRequested(event -> {
                     contextMenu.show(vBox, event.getScreenX(), event.getScreenY());
             });
         }
     }
-//单一操作
     //重命名
     private void rename(List<ImageInDirectory> imageInDirectory) {
         System.out.println("重命名");
@@ -132,7 +121,6 @@ public class MenuHandler {
             }
         });
     }
-
     //复制
     public List<File> copyImage(List<ImageInDirectory> imageInDirectory) {
         System.out.println("复制");
@@ -145,7 +133,6 @@ public class MenuHandler {
         }
         return copyList;
     }
-
     //删除
     private void deleteImage(List<ImageInDirectory> imageInDirectory) {
         System.out.println("删除");
@@ -192,10 +179,7 @@ public class MenuHandler {
         }
         copyList.clear();
     }
-
-
-//大量操作
-    //重命名
+    //批量重命名
     private void multiRename(List<ImageInDirectory> imageInDirectory) {
         System.out.println("批量重命名");
         TextInputDialog prefixDialog = new TextInputDialog();

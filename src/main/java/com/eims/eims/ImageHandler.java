@@ -32,42 +32,33 @@ import java.util.Map;
 
 public class ImageHandler {
 
-    private static FlowPane flowPane;
-    private ImageInDirectory imageInDirectory;
+    private static FlowPane flowPane;//所在布局
+    private ImageInDirectory imageInDirectory;//图片类对象
     private Integer selectSize = 0;//选中图片数量
-
-
     private Double sizeOfImage = 0.0;//图片大小
-
     private Integer numOfImages = 0;//图片数量
-
     private String orignalText;//文件详情最原始格式
-
     private String addtionalText;//文件夹选中文件格式
-
     private Label textLabel;//文件详情
-
-    private MenuHandler menuHandler;
-
-    private Map<VBox, ImageInDirectory> vBoxImageMap;
-
+    private MenuHandler menuHandler;//右键菜单类对象
+    private Map<VBox, ImageInDirectory> vBoxImageMap;//VBox对应图片
     private List<ImageInDirectory> selectedImageInDirectories;//选中图片列表
     private List<File> copyList;//复制图片列表
 
 
-
+    //获得图片数量
     public void setNumOfImages(Integer numOfImages) {
         this.numOfImages = numOfImages;
     }
-
+    //获得图片大小
     public void setSizeOfImage(Double sizeOfImage) {
         this.sizeOfImage = sizeOfImage;
     }
-
+    //返回复制图片列表
     public List<File> getCopyList() {
         return menuHandler.getCopyList();
     }
-
+    //获得选中图片总大小
     public Integer getSize() {
         return selectSize;
     }
@@ -91,12 +82,9 @@ public class ImageHandler {
     public void selectImage() {
         // 创建一个列表来跟踪选中的VBox
         ObservableList<Node> selectedVBoxes = FXCollections.observableArrayList();
-
         // 遍历FlowPane中的所有VBox
         for (Node node : flowPane.getChildren()) {
             if (node instanceof VBox vBox) {
-
-                // 为每个VBox添加鼠标点击事件处理器
                 vBox.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
                     // 检查是否按下了CTRL键
                     if (event.isControlDown() && event.getButton() == MouseButton.PRIMARY) {
@@ -104,16 +92,13 @@ public class ImageHandler {
                         if (selectedVBoxes.contains(vBox)) {
                             vBox.setStyle(""); // 清除之前的样式
                             selectedVBoxes.remove(vBox); // 从选中列表中移除
-
                         } else {
-                            // 否则，选中VBox
-                            vBox.setStyle("-fx-border-color: rgba(126,208,255,0.46);-fx-border-width: 5;"); // 举例：设置边框颜色为蓝色
-                            selectedVBoxes.add(vBox); // 添加到选中列表中
-
+                            vBox.setStyle("-fx-border-color: rgba(126,208,255,0.46);-fx-border-width: 5;");
+                            selectedVBoxes.add(vBox);
                         }
                         event.consume();
                     }else if(!event.isControlDown() && event.getButton() == MouseButton.PRIMARY){
-                        // 单选逻辑：清除其他已选中的VBox的外框
+                        // 清除其他已选中的VBox的外框
                         for (Node selectedNode : selectedVBoxes) {
                             if (selectedNode instanceof VBox && !selectedNode.equals(vBox)) {
                                 ((VBox) selectedNode).setStyle("");
@@ -121,10 +106,9 @@ public class ImageHandler {
                         }
                         // 如果当前VBox已经被选中，则取消选中
                         if (selectedVBoxes.contains(vBox)) {
-                            vBox.setStyle(""); // 清除之前的样式
-                            selectedVBoxes.clear(); // 从选中列表中移除
+                            vBox.setStyle("");
+                            selectedVBoxes.clear();
                         } else {
-                            // 否则，选中当前VBox并添加外框
                             vBox.setStyle("-fx-border-color: rgba(126,208,255,0.46); -fx-border-width: 5;");
                             selectedVBoxes.clear();
                             selectedVBoxes.add(vBox);
@@ -147,10 +131,12 @@ public class ImageHandler {
                     if (event.getButton() == MouseButton.SECONDARY) {
                         if (selectedVBoxes.size() == 1) {
                             // 如果只选中了一个 VBox，调用单选右键菜单方法
-                            menuHandler.setContextMenu((VBox) selectedVBoxes.get(0),getImageInDirectory(selectedVBoxes));
+                            menuHandler.setContextMenu((VBox) selectedVBoxes.get(0)
+                                    ,getImageInDirectory(selectedVBoxes));
                         } else if (selectedVBoxes.size() > 1) {
                             // 如果选中了多个 VBox，调用多选右键菜单方法
-                            menuHandler.setMultiContextMenu(selectedVBoxes,getImageInDirectory(selectedVBoxes));
+                            menuHandler.setMultiContextMenu(selectedVBoxes,
+                                    getImageInDirectory(selectedVBoxes));
                         }
                     }
                     selectSize = selectedVBoxes.size();
@@ -175,35 +161,26 @@ public class ImageHandler {
         return selectedImageInDirectories;
     }
 
-    //双击操作
+    //双击方法图片操作
     public void showImage(){
         for (Node node : flowPane.getChildren()) {
             if (node instanceof VBox vBox) {
-
-                // 为每个VBox添加鼠标点击事件处理器
                 vBox.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                    // 检查是否双击
                     if (event.getClickCount()==2) {
                         Stage popupStage = new Stage();
                         VBox popupVBox = new VBox();
                         popupVBox.getChildren().add(new Label("Double clicked!"));
                         ImageInDirectory imageInDirectory = vBoxImageMap.get(vBox);
-                        // 添加ImageView到弹窗
-                        ImageView popupImageView = new ImageView(imageInDirectory.imageView.getImage());
-                        popupImageView.setPreserveRatio(true); // 保持宽高比
-
-                        // 监听弹窗宽度的变化并更新ImageView的宽度
+                        ImageView popupImageView = new ImageView(imageInDirectory.
+                                imageView.getImage());// 添加ImageView到弹窗
+                        popupImageView.setPreserveRatio(true);
                         popupStage.widthProperty().addListener((observable, oldValue, newValue) -> {
-                            popupImageView.setFitWidth(newValue.doubleValue() - 20); // 减去一些边距
+                            popupImageView.setFitWidth(newValue.doubleValue() - 20);
                         });
-
-                        // 监听弹窗高度的变化并更新ImageView的高度
                         popupStage.heightProperty().addListener((observable, oldValue, newValue) -> {
-                            popupImageView.setFitHeight(newValue.doubleValue() - 60); // 减去一些边距
+                            popupImageView.setFitHeight(newValue.doubleValue() - 60);
                         });
-
                         popupVBox.getChildren().add(popupImageView);
-                        // 创建关闭按钮
                         Label closeButton = new Label("Close");
                         closeButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                             @Override
@@ -212,8 +189,6 @@ public class ImageHandler {
                             }
                         });
                         popupVBox.getChildren().add(closeButton);
-
-                        // 设置弹窗属性
                         popupStage.initModality(Modality.APPLICATION_MODAL);
                         popupStage.setScene(new Scene(popupVBox, 600, 450));
                         popupStage.show();
@@ -235,8 +210,6 @@ public class ImageHandler {
             }
         });
         contextMenu.getItems().add(menuItem);
-
-        // 鼠标右键点击事件处理程序
         flowPane.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton() == MouseButton.SECONDARY) { // 检查是否是右键点击事件
                 if (event.getTarget() == flowPane) { // 检查是否是空白区域
