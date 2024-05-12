@@ -18,18 +18,14 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 public class MenuHandler {
-
     ContextMenu contextMenu;
     private VBox vbox;
     private Map<VBox, ImageInDirectory> vBoxImageMap;
     public void setvBoxImageMap(Map<VBox, ImageInDirectory> vBoxImageMap) {
         this.vBoxImageMap = vBoxImageMap;
     }
-
-
     private FlowPane pane;
     private static List<File> copyList;
-
     public MenuHandler(FlowPane pane,List<File> copyList) {
         this.pane = pane;
         MenuHandler.copyList = Objects.requireNonNullElseGet(copyList, ArrayList::new);
@@ -38,14 +34,11 @@ public class MenuHandler {
     {
         return copyList;
     }
-
     public void setContextMenu(VBox vbox, List<ImageInDirectory> imageInDirectory) {
-        //为图片添加事件
         ContextMenu contextMenu = new ContextMenu();
         MenuItem menuItem1 = new MenuItem("重命名");
         MenuItem menuItem2 = new MenuItem("复制");
         MenuItem menuItem3 = new MenuItem("删除");
-        // 添加菜单项的点击事件处理器
         menuItem1.setOnAction(event -> {
             rename(imageInDirectory);
         });
