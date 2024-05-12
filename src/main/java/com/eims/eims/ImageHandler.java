@@ -4,8 +4,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -167,31 +169,23 @@ public class ImageHandler {
             if (node instanceof VBox vBox) {
                 vBox.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
                     if (event.getClickCount()==2) {
-                        Stage popupStage = new Stage();
-                        VBox popupVBox = new VBox();
-                        popupVBox.getChildren().add(new Label("Double clicked!"));
                         ImageInDirectory imageInDirectory = vBoxImageMap.get(vBox);
-                        ImageView popupImageView = new ImageView(imageInDirectory.
-                                imageView.getImage());// 添加ImageView到弹窗
-                        popupImageView.setPreserveRatio(true);
-                        popupStage.widthProperty().addListener((observable, oldValue, newValue) -> {
-                            popupImageView.setFitWidth(newValue.doubleValue() - 20);
-                        });
-                        popupStage.heightProperty().addListener((observable, oldValue, newValue) -> {
-                            popupImageView.setFitHeight(newValue.doubleValue() - 60);
-                        });
-                        popupVBox.getChildren().add(popupImageView);
-                        Label closeButton = new Label("Close");
-                        closeButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-                                popupStage.close();
-                            }
-                        });
-                        popupVBox.getChildren().add(closeButton);
-                        popupStage.initModality(Modality.APPLICATION_MODAL);
-                        popupStage.setScene(new Scene(popupVBox, 600, 450));
-                        popupStage.show();
+                        try {
+                            // 加载另一个FXML文件
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("PDF.fxml"));
+                            Parent root = loader.load();
+                            SlideController pdfCtrl=loader.getController();
+                            File file = new File(imageInDirectory.getImagePath());
+                            pdfCtrl.initialize(file.getParentFile());
+                            Scene scene = new Scene(root);
+                            Stage stage = new Stage();
+                            stage.setScene(scene);
+                            stage.setTitle("幻灯片");
+                            stage.show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                     }
                 });
             }

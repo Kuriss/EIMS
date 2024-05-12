@@ -42,8 +42,7 @@ public class MenuHandler {
         menuItem1.setOnAction(event -> {
             rename(imageInDirectory);
         });
-        menuItem2.setOnAction(event ->
-        {
+        menuItem2.setOnAction(event -> {
             copyImage(imageInDirectory);
         });
         menuItem3.setOnAction(event -> {
@@ -64,7 +63,6 @@ public class MenuHandler {
             }
         });
     }
-
     public void setMultiContextMenu(ObservableList<Node> selectedVBoxes, List<ImageInDirectory> imageInDirectory) {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem menuItem1 = new MenuItem("批量重命名");
@@ -152,10 +150,8 @@ public class MenuHandler {
             String imagePath=parentPath+File.separator+f.getName();
             File curFile = new File(imagePath);
             String newFileName =curFile.getName();
-
             String newFilePath = parentPath + File.separator + newFileName;
             boolean pathExists =false;
-            if(null==vBoxImageMap) System.out.println("Empty");
             for(Map.Entry<VBox,ImageInDirectory> entry : vBoxImageMap.entrySet())
             {
                 ImageInDirectory image1 = entry.getValue();
@@ -179,22 +175,17 @@ public class MenuHandler {
         prefixDialog.setTitle("输入名称前缀");
         prefixDialog.setHeaderText("请输入名称前缀：");
         Optional<String> prefixResult = prefixDialog.showAndWait();
-
         if (!prefixResult.isPresent()) {
-            return; // 如果用户取消了输入名称前缀，则退出方法
+            return;
         }
-
         String prefix = prefixResult.get();
-
         TextInputDialog startNumberDialog = new TextInputDialog();
         startNumberDialog.setTitle("输入起始编号");
         startNumberDialog.setHeaderText("请输入起始编号：");
         Optional<String> startNumberResult = startNumberDialog.showAndWait();
-
         if (!startNumberResult.isPresent()) {
             return; // 如果用户取消了输入起始编号，则退出方法
         }
-
         int startNumber;
         try {
             startNumber = Integer.parseInt(startNumberResult.get());
@@ -202,16 +193,13 @@ public class MenuHandler {
             System.out.println("起始编号格式不正确");
             return;
         }
-
         TextInputDialog digitNumberDialog = new TextInputDialog();
         digitNumberDialog.setTitle("输入编号位数");
         digitNumberDialog.setHeaderText("请输入编号位数：");
         Optional<String> digitNumberResult = digitNumberDialog.showAndWait();
-
         if (!digitNumberResult.isPresent()) {
             return; // 如果用户取消了输入编号位数，则退出方法
         }
-
         int digitNumber;
         try {
             digitNumber = Integer.parseInt(digitNumberResult.get());
@@ -219,31 +207,23 @@ public class MenuHandler {
             System.out.println("编号位数格式不正确");
             return;
         }
-
         int counter = startNumber;
         String format = "%0" + digitNumber + "d"; // 根据编号位数生成格式化字符串
-
         for (ImageInDirectory image : imageInDirectory) {
             String oldFilePath = image.getImagePath();
-
             String extension = oldFilePath.substring(oldFilePath.lastIndexOf(".")); // 获取文件扩展名
-
             String newFileName = prefix + String.format(format, counter) + extension;
             String parentPath = new File(oldFilePath).getParent();
             String newFilePath = parentPath + File.separator + newFileName;
-
             File oldFile = new File(oldFilePath);
             File newFile = new File(newFilePath);
-
             if (oldFile.renameTo(newFile)) {
                 image.setImagePath(newFilePath);
                 System.out.println("重命名成功: " + newFilePath);
             } else {
                 System.out.println("重命名失败: " + oldFilePath);
             }
-
             counter++;
         }
     }
-
 }
