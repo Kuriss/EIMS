@@ -60,6 +60,8 @@ public class ImageInDirectory {
         vBox.getChildren().addAll(imageVBox, imageLableVBox);
         vBox.setAlignment(Pos.CENTER); // 垂直布局容器居中对齐
         vBox.setSpacing(5); // 设置子元素之间的间距
+        EventHandler<? super MouseEvent> onVBoxClick = null;
+        vBox.setOnMouseClicked(onVBoxClick);
     }
 
 

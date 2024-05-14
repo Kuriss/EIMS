@@ -76,7 +76,7 @@ public class ImageHandler {
     public void setTextLabel(Label textLabel,Map<VBox, ImageInDirectory> vBoxImageMap) {
         this.textLabel = textLabel;
         this.orignalText = textLabel.getText();
-        if(vBoxImageMap==null)System.out.println("2.map is null");
+
         this.vBoxImageMap = vBoxImageMap;
         menuHandler.setvBoxImageMap(vBoxImageMap);
     }
@@ -176,7 +176,7 @@ public class ImageHandler {
                             Parent root = loader.load();
                             SlideController pdfCtrl=loader.getController();
                             File file = new File(imageInDirectory.getImagePath());
-                            pdfCtrl.initialize(file.getParentFile());
+                            pdfCtrl.initialize(file.getParentFile(),imageInDirectory);
                             Scene scene = new Scene(root);
                             Stage stage = new Stage();
                             stage.setScene(scene);

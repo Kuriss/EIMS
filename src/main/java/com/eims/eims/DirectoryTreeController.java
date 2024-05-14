@@ -131,15 +131,14 @@ public class DirectoryTreeController {
         }
         //setcellfactory是javafx中设置自定义单元格的方法，也就是一个项
         directoryTree.setCellFactory(new Callback<>() {
+
             //callback参数定义了如何创建树状图节点的单元格
             @Override  //定义了如何创建管理单元格
             public TreeCell<File> call(TreeView<File> param) {
-
                 //返回创建的单元格
                 return new TreeCell<>() {
                     @Override
                     protected void updateItem(File item, boolean empty) {
-
                         if (!empty) { //如果节点不空
                             super.updateItem(item, false);//调用父类的updateitem方法
                             HBox hBox = new HBox();//创建布局
@@ -149,7 +148,7 @@ public class DirectoryTreeController {
                             hBox.getChildren().add(label);//把label加到hBox面板中
 
                         } else {
-
+                            System.out.println("12345665");
                             this.setGraphic(null);//为空则清空图形
                         }
                     }
@@ -234,7 +233,6 @@ public class DirectoryTreeController {
                         // 创建 ImageInDirectory 对象并添加到 imageFlowPane 中显示
                         ImageInDirectory imageBoxLabel = new ImageInDirectory("File:"+value.getAbsolutePath(),fileName);
                         vBoxImageMap.put((VBox) imageBoxLabel.getImageLabel(),imageBoxLabel);
-                        System.out.println(vBoxImageMap.size());
                         imageFlowPane.getChildren().add(imageBoxLabel.getImageLabel());
                     }
                 }
@@ -242,17 +240,45 @@ public class DirectoryTreeController {
         }
         sizeOfImage = Math.round(sizeOfImage * 100.0) / 100.0; // 将小数保留两位
         label(file.getValue().getName());
-        imageHandle(numAndSizeLabel);
-
+        imageHandle(numAndSizeLabel,file);
     }
     //图片编辑操作
 
-    public void imageHandle(Label textLabel){
+    public void imageHandle(Label textLabel,TreeItem<File> file){
         ImageHandler imageHandler = new ImageHandler(imageFlowPane,copyList);
         imageHandler.setNumOfImages(numOfImage);
         imageHandler.setSizeOfImage(sizeOfImage);
-        if(vBoxImageMap==null) System.out.println("1.map is null");
-        imageHandler.setTextLabel(textLabel,vBoxImageMap);//
+        try {
+            addItems(file, 0);//添加子文件
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //setcellfactory是javafx中设置自定义单元格的方法，也就是一个项
+        directoryTree.setCellFactory(new Callback<>() {
+
+            //callback参数定义了如何创建树状图节点的单元格
+            @Override  //定义了如何创建管理单元格
+            public TreeCell<File> call(TreeView<File> param) {
+                //返回创建的单元格
+                return new TreeCell<>() {
+                    @Override
+                    protected void updateItem(File item, boolean empty) {
+                        if (!empty) { //如果节点不空
+                            super.updateItem(item, false);//调用父类的updateitem方法
+                            HBox hBox = new HBox();//创建布局
+                            Label label = new Label(isListRoots(item));//标签，内容为目录名字
+                            this.setGraphic(hBox);//this指的是TreeCell，设置这个节点布局
+                            this.setStyle("-fx-border-color: rgb(240,240,240)");//设置颜色
+                            hBox.getChildren().add(label);//把label加到hBox面板中
+                            System.out.println("1213123121");
+                        } else {
+                            this.setGraphic(null);//为空则清空图形
+                        }
+                    }
+                };
+            }
+        });
+        imageHandler.setTextLabel(textLabel,vBoxImageMap);
         imageHandler.selectImage();//处理选中与功能
         if(copyList==null)
         {
@@ -269,7 +295,7 @@ public class DirectoryTreeController {
         topMessagePane.getChildren().add(currentDirectoryLable);
         numAndSizeLabel.setText("图片数量："+numOfImage+"      图片总大小："+sizeOfImage+"MB"+"     已选取图片：");
     }
-    //幻灯片按钮
+//    幻灯片按钮
     @FXML
     void onPDFClick(MouseEvent mouseEvent)
     {
@@ -278,7 +304,7 @@ public class DirectoryTreeController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("PDF.fxml"));
             Parent root = loader.load();
             SlideController pdfCtrl=loader.getController();
-            pdfCtrl.initialize(directoryTree.getSelectionModel().getSelectedItem().getValue());
+            pdfCtrl.initialize(directoryTree.getSelectionModel().getSelectedItem().getValue(),null);
             Scene scene = new Scene(root);
             Stage stage = new Stage();
             stage.setScene(scene);
