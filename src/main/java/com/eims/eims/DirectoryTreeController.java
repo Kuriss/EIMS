@@ -65,6 +65,27 @@ public class DirectoryTreeController {
     @FXML
     private ScrollPane imageScrollPane;
 
+    //最小化按钮;
+    @FXML
+    private ImageView minButton;
+    //关闭按钮;
+    @FXML
+    private ImageView closeButton;
+
+    // 最小化窗口
+    @FXML
+    private void handleMinimizeButtonClick() {
+        Stage stage = (Stage) minButton.getScene().getWindow();
+        stage.setIconified(true);
+    }
+
+    // 关闭窗口
+    @FXML
+    private void handleCloseButtonClick() {
+        Stage stage = (Stage) closeButton.getScene().getWindow();
+        stage.close();
+    }
+
 
     //类似于构造函数的一个东西，在这里对directorytree进行初始化设置
     @FXML

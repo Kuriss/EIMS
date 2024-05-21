@@ -84,6 +84,8 @@ public class SlideController {
             imageList.clear();
             // 读取文件夹中的所有图片文件
             File[] files = selectedDirectory.listFiles();
+
+
             if (files != null) {
                 for (File file : files) {
                     if (isImageFile(file)) {
@@ -92,6 +94,8 @@ public class SlideController {
                     }
                 }
             }
+
+
             // 显示第一张图片
             if(image==null) {
                 if (!imageList.isEmpty()) {
