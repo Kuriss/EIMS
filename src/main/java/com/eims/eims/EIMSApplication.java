@@ -24,10 +24,8 @@ public class EIMSApplication extends Application {
         try{
             FXMLLoader fxmlLoader = new FXMLLoader(EIMSApplication.class.getResource("MainWindow.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
-            stage.setMinHeight(500);
-            stage.setMinWidth(700);
             //设置程序图标
-            stage.getIcons().add(new Image("picIcon2.png"));
+            stage.getIcons().add(new Image("picIcon.png"));
             //隐藏顶部装饰栏
             stage.initStyle(StageStyle.UNDECORATED);
 

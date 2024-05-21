@@ -29,11 +29,16 @@ import java.util.List;
 import java.util.Random;
 
 public class SlideController {
+    @FXML
+    private ImageView pdfcloseButton;
+    @FXML
+    private ImageView pdfminButton;
 
     @FXML
-    private ImageView test_image;           //图片;
+    private ImageView test_image;           //图片;     //添加文件夹按钮;
     @FXML
-    private ImageView addFileButton;                    //添加文件夹按钮;
+    private ImageView playNpauseButton;                     //播放暂停按钮;
+    private boolean isPlaying = false; // 用于跟踪播放状态，默认为 false
     @FXML
     private ImageView previousPictureButton;            //上一张按钮;
     @FXML
@@ -53,18 +58,21 @@ public class SlideController {
     private double scaleFactor = 1.0;                   //缩放倍数;
     private double mouseDownX = 0;                      //鼠标操作X坐标
     private double mouseDownY = 0;                      //鼠标操作Y坐标
+    private ImageInDirectory image;
+    public File selectedDirectory;
+    Image pauseImage = new Image(getClass().getResource("/picture/pause-circle-fill.png").toExternalForm());
+    Image playImage = new Image(getClass().getResource("/picture/play-arrow-fill.png").toExternalForm());
+
 
     public SlideController(){
         System.out.println("构造函数");
     }
-    private ImageInDirectory image;
-    public File selectedDirectory;
 
     //初始化函数(页面加载时执行)
     @FXML
     void initialize(File selectedDirectory,ImageInDirectory image) {
         //初始化幻灯片风格选择框选项;
-        ObservableList<String> observableList = FXCollections.observableArrayList("常规", "淡入淡出", "滑动切换","翻转切换","缩放切换","闪烁切换","随机切换");
+        ObservableList<String> observableList = FXCollections.observableArrayList("常规", "淡入淡出", "滑动切换","翻转切换","缩放切换","闪烁切换");
         styleComboBox.setItems(observableList);
         this.selectedDirectory = selectedDirectory;
         this.image = image;
@@ -73,7 +81,39 @@ public class SlideController {
         //添加鼠标滚轮事件监听器(用于滚轮放大缩小图片)
         addScrollListeners();
         handleSelectFolderButtonAction();
+
     }
+
+    // 最小化窗口
+    @FXML
+    private void handlepdfMinimizeButtonClick() {
+        Stage stage = (Stage) pdfminButton.getScene().getWindow();
+        stage.setIconified(true);
+    }
+
+    // 关闭窗口
+    @FXML
+    private void handlepdfCloseButtonClick() {
+        Stage stage = (Stage) pdfcloseButton.getScene().getWindow();
+        stage.close();
+    }
+
+    //播放暂停按钮
+    @FXML
+    private void handlePlayPauseButtonClick(MouseEvent event) {
+        if (isPlaying) {
+            // 如果当前是播放状态，则切换为暂停状态
+            playNpauseButton.setImage(playImage); // 设置按钮图标为播放图标
+            handleStopButtonAction(new ActionEvent()); // 停止播放幻灯片
+        } else {
+            // 如果当前是暂停状态，则切换为播放状态
+            playNpauseButton.setImage(pauseImage); // 设置按钮图标为暂停图标
+            handlePlayButtonAction(new ActionEvent()); // 播放幻灯片
+        }
+        // 切换播放状态
+        isPlaying = !isPlaying;
+    }
+
 
     //选择文件夹
     @FXML
@@ -113,6 +153,7 @@ public class SlideController {
         String name = file.getName().toLowerCase();
         return name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".gif");
     }
+
 
     //上一张;
     @FXML
@@ -250,7 +291,6 @@ public class SlideController {
     @FXML
     private void handlePlayButtonAction(ActionEvent event){
         //播放幻灯片时禁用按钮;
-        addFileButton.setDisable(true);
         previousPictureButton.setDisable(true);
         nextPictureButton.setDisable(true);
         zoomInButton.setDisable(true);
@@ -263,7 +303,6 @@ public class SlideController {
         if (timeline != null && timeline.getStatus() == Timeline.Status.RUNNING) {
             return;
         }
-
         String selectedStyle = (String)styleComboBox.getValue();
         if (selectedStyle == null || selectedStyle.isEmpty()) {
             playSlideshow(); // 如果没有选择项目，则默认使用常规幻灯片
@@ -295,7 +334,6 @@ public class SlideController {
                     break;
             }
         }
-
     }
 
     // 播放常规幻灯片
@@ -558,7 +596,6 @@ public class SlideController {
     @FXML
     private void handleStopButtonAction(ActionEvent event){
         //停止播放时取消按钮禁用;
-        addFileButton.setDisable(false);
         previousPictureButton.setDisable(false);
         nextPictureButton.setDisable(false);
         zoomInButton.setDisable(false);

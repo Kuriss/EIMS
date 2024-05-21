@@ -124,13 +124,6 @@ public class DirectoryTreeController {
         imageFlowPane.setStyle("-fx-background-color: rgb(255,255,255)");
         //imageFlowPane.setPrefSize(579.8, 600);
 
-
-
-
-
-
-
-
     }
 
 
