@@ -16,8 +16,11 @@
    <center>
       <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="920.0" prefWidth="1200.0" stylesheets="@shadowStyle.css">
          <children>
-            <ComboBox fx:id="styleComboBox" layoutX="1020.0" layoutY="835.0" prefWidth="150.0" />
-            <Text layoutX="1020.0" layoutY="830.0" strokeType="OUTSIDE" strokeWidth="0.0" text="幻灯片风格选择" wrappingWidth="150.0" />
+            <ComboBox fx:id="styleComboBox" layoutX="800.0" layoutY="854.0" prefWidth="150.0" />
+            <Text layoutX="800.0" layoutY="845.0" strokeType="OUTSIDE" strokeWidth="0.0" text="幻灯片选项" wrappingWidth="150.0">
+               <font>
+                  <Font name="System Bold" size="17.0" />
+               </font></Text>
             <ImageView fx:id="previousPictureButton" fitHeight="50.0" fitWidth="50.0" layoutX="397.0" layoutY="840.0" onMouseClicked="#handlePreviousButtonAction" pickOnBounds="true" preserveRatio="true" styleClass="normalButton">
                <image>
                   <Image url="@../../../picture/arrow-left.png" />

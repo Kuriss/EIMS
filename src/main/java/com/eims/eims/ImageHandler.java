@@ -183,6 +183,8 @@ public class ImageHandler {
                             Stage stage = new Stage();
                             stage.setScene(scene);
                             stage.setTitle("幻灯片");
+                            //设置程序图标
+                            stage.getIcons().add(new Image("picIcon2.png"));
                             // 设置装饰栏样式为无
                             stage.initStyle(StageStyle.UNDECORATED);
                             //窗口拖动
