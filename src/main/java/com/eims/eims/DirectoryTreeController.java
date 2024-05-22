@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 
 public class DirectoryTreeController {
@@ -297,7 +298,10 @@ public class DirectoryTreeController {
             copyList = imageHandler.getCopyList();
         }
         imageHandler.showImage();
-        imageHandler.blank();
+        Consumer<MouseEvent> handleMethod = event -> handle(event);
+
+        // 调用 blank 方法，将 handleMethod 传递给它
+        imageHandler.blank(handleMethod);
         topMessagePane.getChildren().add(numAndSizeLabel);
     }
     //图片计数操作

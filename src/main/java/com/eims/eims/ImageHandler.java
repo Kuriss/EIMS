@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class ImageHandler {
 
@@ -214,9 +216,11 @@ public class ImageHandler {
         });
     }
     //空白区域操作
-    public void blank() {
+    public void blank(Consumer<MouseEvent> handleMethod) {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem menuItem = new MenuItem("粘贴");
+        MenuItem menuItem1 = new MenuItem("刷新");
+
         ImageInDirectory image = vBoxImageMap.get(flowPane.getChildren().get(0));
         menuItem.setOnAction(actionEvent -> {
             try {
@@ -225,7 +229,13 @@ public class ImageHandler {
                 throw new RuntimeException(e);
             }
         });
+        menuItem1.setOnAction(actionEvent -> {
+            MouseEvent virtualEvent = new MouseEvent(MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true, true, true, true, true, true, true, null);
+            handleMethod.accept(virtualEvent);
+            contextMenu.hide();
+        });
         contextMenu.getItems().add(menuItem);
+        contextMenu.getItems().add(menuItem1);
         flowPane.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton() == MouseButton.SECONDARY) { // 检查是否是右键点击事件
                 if (event.getTarget() == flowPane) { // 检查是否是空白区域
@@ -233,6 +243,8 @@ public class ImageHandler {
                 } else {
                     contextMenu.hide();
                 }
+            }else if (event.getButton() == MouseButton.PRIMARY && event.getTarget() == flowPane) { // 如果是左键点击空白区域
+                contextMenu.hide();
             }
         });
     }
