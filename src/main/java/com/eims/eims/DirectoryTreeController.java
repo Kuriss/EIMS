@@ -65,6 +65,27 @@ public class DirectoryTreeController {
     @FXML
     private ScrollPane imageScrollPane;
 
+    //最小化按钮;
+    @FXML
+    private ImageView minButton;
+    //关闭按钮;
+    @FXML
+    private ImageView closeButton;
+
+    // 最小化窗口
+    @FXML
+    private void handleMinimizeButtonClick() {
+        Stage stage = (Stage) minButton.getScene().getWindow();
+        stage.setIconified(true);
+    }
+
+    // 关闭窗口
+    @FXML
+    private void handleCloseButtonClick() {
+        Stage stage = (Stage) closeButton.getScene().getWindow();
+        stage.close();
+    }
+
 
     //类似于构造函数的一个东西，在这里对directorytree进行初始化设置
     @FXML
@@ -102,13 +123,6 @@ public class DirectoryTreeController {
         imageFlowPane.setVgap(30);//每个图片的垂直间距
         imageFlowPane.setStyle("-fx-background-color: rgb(255,255,255)");
         //imageFlowPane.setPrefSize(579.8, 600);
-
-
-
-
-
-
-
 
     }
 
@@ -148,7 +162,6 @@ public class DirectoryTreeController {
                             hBox.getChildren().add(label);//把label加到hBox面板中
 
                         } else {
-                            System.out.println("12345665");
                             this.setGraphic(null);//为空则清空图形
                         }
                     }
@@ -224,7 +237,7 @@ public class DirectoryTreeController {
                     String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);//获取后缀
                     // 程序能够显示的图片格式包括:.JPG、.JPEG、.GIF、.PNG、和.BMP。
                     if (suffix.equals("jpg")||suffix.equals("JPG")||suffix.equals("png")||suffix.equals("BMP")
-                            ||suffix.equals("GIF")||suffix.equals("JPEG")||suffix.equals("gif"))
+                            ||suffix.equals("GIF")||suffix.equals("JPEG")||suffix.equals("gif")||suffix.equals("bmp"))
                     {
                         numOfImage++;//图片数+1
                         File fileOfImage = new File(value.getAbsolutePath());
@@ -270,7 +283,6 @@ public class DirectoryTreeController {
                             this.setGraphic(hBox);//this指的是TreeCell，设置这个节点布局
                             this.setStyle("-fx-border-color: rgb(240,240,240)");//设置颜色
                             hBox.getChildren().add(label);//把label加到hBox面板中
-                            System.out.println("1213123121");
                         } else {
                             this.setGraphic(null);//为空则清空图形
                         }

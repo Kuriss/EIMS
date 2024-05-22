@@ -16,19 +16,14 @@
         <Button fx:id="stopButton" layoutX="1000.0" layoutY="878.0" mnemonicParsing="false" onAction="#handleStopButtonAction" text="暂停" />
         <ComboBox fx:id="styleComboBox" layoutX="1020.0" layoutY="835.0" prefWidth="150.0" />
         <Text layoutX="1020.0" layoutY="830.0" strokeType="OUTSIDE" strokeWidth="0.0" text="幻灯片风格选择" wrappingWidth="150.0" />
-        <ImageView fx:id="addFileButton" fitHeight="45.0" fitWidth="45.0" layoutX="315.0" layoutY="840.0" onMouseClicked="#handleSelectFolderButtonAction" pickOnBounds="true" preserveRatio="true" styleClass="normalButton">
-            <image>
-                <Image url="@../../../picture/文件夹.png" />
-            </image>
-        </ImageView>
         <ImageView fx:id="previousPictureButton" fitHeight="45.0" fitWidth="45.0" layoutX="397.0" layoutY="840.0" onMouseClicked="#handlePreviousButtonAction" pickOnBounds="true" preserveRatio="true" styleClass="normalButton">
             <image>
-                <Image url="@../../../picture/上一张.png" />
+                <Image url="@../../../picture/arrow-left.png" />
             </image>
         </ImageView>
         <ImageView fx:id="nextPictureButton" fitHeight="45.0" fitWidth="45.0" layoutX="483.0" layoutY="840.0" onMouseClicked="#handleNextButtonAction" pickOnBounds="true" preserveRatio="true" styleClass="normalButton">
             <image>
-                <Image url="@../../../picture/下一张.png" />
+                <Image url="@../../../picture/arrow-right.png" />
             </image>
         </ImageView>
         <ImageView fx:id="zoomInButton" fitHeight="45.0" fitWidth="45.0" layoutX="555.0" layoutY="840.0" onMouseClicked="#handleZoomInButtonAction" pickOnBounds="true" preserveRatio="true" styleClass="normalButton">
