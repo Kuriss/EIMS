@@ -7,11 +7,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Rectangle;
@@ -81,7 +83,8 @@ public class SlideController {
         //添加鼠标滚轮事件监听器(用于滚轮放大缩小图片)
         addScrollListeners();
         handleSelectFolderButtonAction();
-
+        // 设置键盘事件处理
+        setKeyboardHandlers();
     }
 
     // 最小化窗口
@@ -151,7 +154,7 @@ public class SlideController {
     // 检查文件是否为图片文件
     private boolean isImageFile(File file) {
         String name = file.getName().toLowerCase();
-        return name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".gif");
+        return name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".gif") || name.endsWith(".bmp");
     }
 
 
@@ -197,6 +200,22 @@ public class SlideController {
         updateImageView(nextImage);
         updateFileNameTextField();
     }
+
+    //键盘
+    @FXML
+    private void handleKeyPressed(KeyEvent event) {
+        switch (event.getCode()) {
+            case LEFT:
+                handlePreviousButtonAction(null);
+                break;
+            case RIGHT:
+                handleNextButtonAction(null);
+                break;
+            default:
+                break;
+        }
+    }
+
 
     //放大图片;
     @FXML
@@ -285,6 +304,23 @@ public class SlideController {
             }
         });
     }
+
+    private void setKeyboardHandlers() {
+        // 获取场景的根节点
+        Scene scene = previousPictureButton.getScene();
+        if (scene != null) {
+            // 设置键盘事件处理程序
+            scene.setOnKeyPressed(this::handleKeyPressed);
+        } else {
+            // 场景未初始化，延迟到场景加载完毕后设置事件处理程序
+            previousPictureButton.sceneProperty().addListener((observable, oldScene, newScene) -> {
+                if (newScene != null) {
+                    newScene.setOnKeyPressed(this::handleKeyPressed);
+                }
+            });
+        }
+    }
+
 
 
     //播放幻灯片

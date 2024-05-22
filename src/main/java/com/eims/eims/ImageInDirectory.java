@@ -33,7 +33,6 @@ public class ImageInDirectory {
     public ImageInDirectory(String imagePath,String imageName){
         this.imagePath = imagePath;
         this.imageName = imageName;
-        System.out.println(imagePath+"    "+imageName);
         Image image = new Image(imagePath);// // 创建 Image 对象并设置图片路径
         imageView = new ImageView(image);//把image放到imageview中
         imageView.setFitWidth(150);//设置尺寸

@@ -162,7 +162,6 @@ public class DirectoryTreeController {
                             hBox.getChildren().add(label);//把label加到hBox面板中
 
                         } else {
-                            System.out.println("12345665");
                             this.setGraphic(null);//为空则清空图形
                         }
                     }
@@ -238,7 +237,7 @@ public class DirectoryTreeController {
                     String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);//获取后缀
                     // 程序能够显示的图片格式包括:.JPG、.JPEG、.GIF、.PNG、和.BMP。
                     if (suffix.equals("jpg")||suffix.equals("JPG")||suffix.equals("png")||suffix.equals("BMP")
-                            ||suffix.equals("GIF")||suffix.equals("JPEG")||suffix.equals("gif"))
+                            ||suffix.equals("GIF")||suffix.equals("JPEG")||suffix.equals("gif")||suffix.equals("bmp"))
                     {
                         numOfImage++;//图片数+1
                         File fileOfImage = new File(value.getAbsolutePath());
@@ -284,7 +283,6 @@ public class DirectoryTreeController {
                             this.setGraphic(hBox);//this指的是TreeCell，设置这个节点布局
                             this.setStyle("-fx-border-color: rgb(240,240,240)");//设置颜色
                             hBox.getChildren().add(label);//把label加到hBox面板中
-                            System.out.println("1213123121");
                         } else {
                             this.setGraphic(null);//为空则清空图形
                         }
