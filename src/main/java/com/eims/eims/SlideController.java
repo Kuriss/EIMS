@@ -23,7 +23,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
+import javafx.scene.control.Alert.AlertType;
 import java.io.File;
 import java.security.interfaces.RSAMultiPrimePrivateCrtKey;
 import java.util.ArrayList;
@@ -128,7 +128,6 @@ public class SlideController {
             // 读取文件夹中的所有图片文件
             File[] files = selectedDirectory.listFiles();
 
-
             if (files != null) {
                 for (File file : files) {
                     if (isImageFile(file)) {
@@ -137,8 +136,6 @@ public class SlideController {
                     }
                 }
             }
-
-
             // 显示第一张图片
             if(image==null) {
                 if (!imageList.isEmpty()) {
@@ -169,6 +166,13 @@ public class SlideController {
         if (imageList.isEmpty() || imageList.size() <= 1) {
             return; // 如果图片列表为空或只有一张图片，则不做任何操作
         }
+
+        if (currentIndex == 0) {
+            // 当前是第一张图片，弹出提示
+            showAlert("提示", "当前图片已经是第一张图片！");
+            return;
+        }
+
         currentIndex = (currentIndex - 1 + imageList.size()) % imageList.size();
         Image previousImage = imageList.get(currentIndex);
         //重置缩放比例;
@@ -190,6 +194,12 @@ public class SlideController {
         if (imageList.isEmpty() || imageList.size() <= 1) {
             return; // 如果图片列表为空或只有一张图片，则不做任何操作
         }
+        if (currentIndex == imageList.size() - 1) {
+            // 当前是最后一张图片，弹出提示
+            showAlert("提示", "当前图片已经是最后一张图片！");
+            return;
+        }
+
         currentIndex = (currentIndex + 1) % imageList.size();
         Image nextImage = imageList.get(currentIndex);
         //重置缩放比例;
@@ -199,6 +209,15 @@ public class SlideController {
 
         updateImageView(nextImage);
         updateFileNameTextField();
+    }
+
+    // 显示提示框
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     //键盘
@@ -267,7 +286,6 @@ public class SlideController {
                 // 计算鼠标移动的距离
                 double deltaX = event.getSceneX() - mouseDownX;
                 double deltaY = event.getSceneY() - mouseDownY;
-
                 // 移动图片
                 test_image.setTranslateX(test_image.getTranslateX() + deltaX);
                 test_image.setTranslateY(test_image.getTranslateY() + deltaY);

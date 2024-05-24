@@ -36,10 +36,20 @@
       </BorderPane>
    </center>
    <bottom>
-      <Pane fx:id="bottomPane" prefHeight="25.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+      <Pane fx:id="bottomPane" prefHeight="40.0" prefWidth="1320.0" BorderPane.alignment="CENTER">
          <children>
-            <Button layoutX="163.0" layoutY="1.0" mnemonicParsing="false" onMouseClicked="#handle" text="刷新" />
+            <Button layoutX="491.0" layoutY="3.0" mnemonicParsing="false" onMouseClicked="#handle" text="刷新" />
             <Button layoutX="389.0" layoutY="1.0" mnemonicParsing="false" onMouseClicked="#onPDFClick" text="幻灯片" />
+            <ImageView fx:id="pdfButton" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#onPDFClick" pickOnBounds="true" preserveRatio="true" styleClass="normalButton">
+               <image>
+                  <Image url="@../../../picIcon2.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="40.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="幻灯片">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
          </children></Pane>
    </bottom>
    <top>

@@ -1,6 +1,4 @@
 package com.eims.eims;
-
-
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;

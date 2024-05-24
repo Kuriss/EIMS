@@ -7,10 +7,12 @@ import javafx.geometry.Orientation;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
 import java.io.File;
@@ -23,6 +25,8 @@ import java.util.ResourceBundle;
 
 
 public class DirectoryTreeController {
+    @FXML
+    private ImageView pdfButton;
 
     @FXML
     private BorderPane boderPane;
@@ -309,7 +313,7 @@ public class DirectoryTreeController {
     }
 //    幻灯片按钮
     @FXML
-    void onPDFClick(MouseEvent mouseEvent)
+    void onPDFClick(MouseEvent event)
     {
         try {
             // 加载另一个FXML文件
@@ -318,13 +322,36 @@ public class DirectoryTreeController {
             SlideController pdfCtrl=loader.getController();
             pdfCtrl.initialize(directoryTree.getSelectionModel().getSelectedItem().getValue(),null);
             Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("shadowStyle.css").toExternalForm());
             Stage stage = new Stage();
             stage.setScene(scene);
             stage.setTitle("幻灯片");
+            //设置程序图标
+            stage.getIcons().add(new Image("picIcon2.png"));
+            // 设置装饰栏样式为无
+            stage.initStyle(StageStyle.UNDECORATED);
+            //窗口拖动
+            addDraggableNode(stage, root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    //鼠标偏移量
+    private double xOffset = 0;
+    private double yOffset = 0;
+
+    private void addDraggableNode(Stage stage, Parent root) {
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+
+        root.setOnMouseDragged(event -> {
+            stage.setX(event.getScreenX() - xOffset);
+            stage.setY(event.getScreenY() - yOffset);
+        });
     }
 
 }
