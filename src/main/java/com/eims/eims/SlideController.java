@@ -369,7 +369,6 @@ public class SlideController {
 
     // 播放常规幻灯片
     private void playSlideshow() {
-
         timeline = new Timeline(new KeyFrame(Duration.seconds(1.5), e -> {          //参数为两张图片交替时间间隔;
             currentIndex = (currentIndex + 1) % imageList.size();
             Image nextImage = imageList.get(currentIndex);
@@ -409,7 +408,7 @@ public class SlideController {
     private void playSlideSlideshow() {
 
         //创建时间轴,每2.3s执行一次切换;
-        timeline = new Timeline(new KeyFrame(Duration.seconds(2.3), e -> {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(2.5), e -> {
             //更新图片索引;
             currentIndex = (currentIndex + 1) % imageList.size();
             Image nextImage = imageList.get(currentIndex);
