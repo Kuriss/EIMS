@@ -177,15 +177,15 @@ public class SlideController {
             showAlert("提示", boundaryMessage);
             return;
         }
-
         // 更新图片索引
         currentIndex = (currentIndex + direction + imageList.size()) % imageList.size();
         Image currentImage = imageList.get(currentIndex);
-
+        //更新图片;
         updateImageView(currentImage);
         updateFileNameTextField();
     }
 
+    //重置图片位置，放大倍数;
     private void resetImagePositionAndScale() {
         test_image.setTranslateX(0);
         test_image.setTranslateY(0);
@@ -193,7 +193,6 @@ public class SlideController {
         test_image.setScaleY(1.0);
         scaleFactor = 1.0;
     }
-
 
     // 显示提示框
     private void showAlert(String title, String message) {
@@ -204,7 +203,7 @@ public class SlideController {
         alert.showAndWait();
     }
 
-    //键盘
+    //监听键盘事件;
     @FXML
     private void handleKeyPressed(KeyEvent event) {
         switch (event.getCode()) {
@@ -218,7 +217,6 @@ public class SlideController {
                 break;
         }
     }
-
 
     //放大图片;
     @FXML
@@ -323,8 +321,6 @@ public class SlideController {
         }
     }
 
-
-
     //播放幻灯片
     @FXML
     private void handlePlayButtonAction(ActionEvent event){
@@ -363,9 +359,6 @@ public class SlideController {
                     break;
                 case "闪烁切换":
                     playBlinkSlideshow();
-                    break;
-                case "随机切换":
-                    playRandomSlideshow();
                     break;
                 default:
                     playSlideshow(); // 默认使用常规幻灯片
@@ -585,49 +578,6 @@ public class SlideController {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
-
-    // 播放随机风格幻灯片
-    private void playRandomSlideshow() {
-
-        timeline = new Timeline(new KeyFrame(Duration.seconds(2.3), e -> {
-
-//            if (timeline != null && timeline.getStatus() == Timeline.Status.RUNNING) {
-//                timeline.stop(); // 停止当前正在运行的时间轴
-//            }
-
-            currentIndex = (currentIndex + 1) % imageList.size();
-            Image nextImage = imageList.get(currentIndex);
-
-            // 创建一个随机数生成器
-            Random random = new Random();
-
-            // 随机选择一个切换效果
-            int style = random.nextInt(4); // 生成一个0到3的随机数
-
-            switch (style) {
-                case 0:
-                    playFadeSlideshow();
-                    break;
-                case 1:
-                    playSlideSlideshow();
-                    break;
-                case 2:
-                    playFlipSlideshow();
-                    break;
-                case 3:
-                    playZoomSlideshow();
-                    break;
-                default:
-                    playSlideshow();
-                    break;
-            }
-
-            updateFileNameTextField();
-        }));
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
-    }
-
 
 
     //停止播放
