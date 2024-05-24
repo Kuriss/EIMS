@@ -155,61 +155,45 @@ public class SlideController {
     }
 
 
-    //上一张;
     @FXML
     private void handlePreviousButtonAction(MouseEvent event) {
-
-        // 重置位置
-        test_image.setTranslateX(0);
-        test_image.setTranslateY(0);
-
-        if (imageList.isEmpty() || imageList.size() <= 1) {
-            return; // 如果图片列表为空或只有一张图片，则不做任何操作
-        }
-
-        if (currentIndex == 0) {
-            // 当前是第一张图片，弹出提示
-            showAlert("提示", "当前图片已经是第一张图片！");
-            return;
-        }
-
-        currentIndex = (currentIndex - 1 + imageList.size()) % imageList.size();
-        Image previousImage = imageList.get(currentIndex);
-        //重置缩放比例;
-        test_image.setScaleX(1.0);
-        test_image.setScaleY(1.0);
-        scaleFactor = 1.0;
-
-        updateImageView(previousImage);
-        updateFileNameTextField();
+        handleImageNavigation(-1, "当前图片已经是第一张图片！");
     }
 
-    // 点击“下一张”按钮事件处理方法
     @FXML
     private void handleNextButtonAction(MouseEvent event) {
-        // 重置位置
-        test_image.setTranslateX(0);
-        test_image.setTranslateY(0);
+        handleImageNavigation(1, "当前图片已经是最后一张图片！");
+    }
+
+    private void handleImageNavigation(int direction, String boundaryMessage) {
+        resetImagePositionAndScale();
 
         if (imageList.isEmpty() || imageList.size() <= 1) {
             return; // 如果图片列表为空或只有一张图片，则不做任何操作
         }
-        if (currentIndex == imageList.size() - 1) {
-            // 当前是最后一张图片，弹出提示
-            showAlert("提示", "当前图片已经是最后一张图片！");
+
+        if ((direction == -1 && currentIndex == 0) || (direction == 1 && currentIndex == imageList.size() - 1)) {
+            // 当前是边界情况，弹出提示
+            showAlert("提示", boundaryMessage);
             return;
         }
 
-        currentIndex = (currentIndex + 1) % imageList.size();
-        Image nextImage = imageList.get(currentIndex);
-        //重置缩放比例;
+        // 更新图片索引
+        currentIndex = (currentIndex + direction + imageList.size()) % imageList.size();
+        Image currentImage = imageList.get(currentIndex);
+
+        updateImageView(currentImage);
+        updateFileNameTextField();
+    }
+
+    private void resetImagePositionAndScale() {
+        test_image.setTranslateX(0);
+        test_image.setTranslateY(0);
         test_image.setScaleX(1.0);
         test_image.setScaleY(1.0);
         scaleFactor = 1.0;
-
-        updateImageView(nextImage);
-        updateFileNameTextField();
     }
+
 
     // 显示提示框
     private void showAlert(String title, String message) {
